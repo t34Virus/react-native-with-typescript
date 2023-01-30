@@ -10,15 +10,16 @@
 
 import React, {type PropsWithChildren} from 'react';
 import {
+  Appearance,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
+  useWindowDimensions,
   View,
 } from 'react-native';
-
 import {
   Colors,
   DebugInstructions,
@@ -26,7 +27,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import {getLocales} from 'expo-localization';
 const Section: React.FC<
   PropsWithChildren<{
     title: string;
@@ -58,11 +59,40 @@ const Section: React.FC<
 };
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const fontScale: number = useWindowDimensions().fontScale;
+  function getFontSize(fontSize: number): string {
+    let textSize;
+    switch (true) {
+      case fontSize > 1.29:
+        textSize = 'largest';
+        break;
+      case fontSize < 1.29 && fontSize > 1.14:
+        textSize = 'large';
+        break;
+      case fontSize === 1:
+        textSize = 'default';
+        break;
+      default:
+        textSize = 'small';
+        break;
+    }
+
+    return textSize;
+  }
+  const languageCode: string = getLocales()[0].languageCode;
+  const isDarkMode: boolean = Appearance.getColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  console.log(
+    'System Language:',
+    languageCode,
+    ', is darkMode:',
+    isDarkMode,
+    fontScale,
+    getFontSize(fontScale),
+  );
 
   return (
     <SafeAreaView style={backgroundStyle}>
